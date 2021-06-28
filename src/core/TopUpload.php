@@ -9,8 +9,8 @@ class TopUpload
 
 
      static   function TopSliceUpload(){
-        $upload = new TopSliceUpload('','','','');
-        return $upload->execute();
+         $upload = new TopSliceUpload($_FILES["file"]["tmp_name"],$_POST['blob_num'],$_POST['total_blob_num'],$_POST['file_name']);
+         return $upload->execute();
     }
 
 
