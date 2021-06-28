@@ -4,6 +4,7 @@
     "require": {
         "topthink/think-migration": "^3.0",
         "guzzlehttp/guzzle": "~6.0",
+        "qcloud/cos-sdk-v5": ">=2.0",
         "ext-json": "*"
     },
     "autoload": {
