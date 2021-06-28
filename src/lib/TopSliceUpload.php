@@ -13,7 +13,7 @@ class TopSliceUpload
 {
 
     private $filepath = ''; //上传目录
-    private $tmpPath; //PHP文件临时目录
+    private $tmpPath; //文件临时目录
     private $blobNum; //第几个文件块
     private $totalBlobNum; //文件块总数
     private $fileName; //文件名
@@ -29,7 +29,7 @@ class TopSliceUpload
      */
     public function __construct($tmpPath,$blobNum,$totalBlobNum,$fileName, $md5FileName ="")
     {
-        $this->filepath = dirname(__DIR__)."/temp/upload";
+        $this->filepath = dirname(__DIR__)."/temp/upload/".md5($fileName)."/";
         $this->tmpPath = $tmpPath;
         $this->blobNum = $blobNum;
         $this->totalBlobNum = $totalBlobNum;
@@ -39,7 +39,7 @@ class TopSliceUpload
     }
 
 
-    //返回数据
+    //执行成功 返回文件地址
     public function execute(){
         if($this->blobNum == $this->totalBlobNum){
             if(file_exists($this->filepath.'/'. $this->fileName)){
@@ -113,6 +113,11 @@ class TopSliceUpload
     }
 
 
-
+    /**
+     * 删除目录文件
+     */
+    function deleteFile(){
+        rmdir($this->filepath);
+    }
 
 }
