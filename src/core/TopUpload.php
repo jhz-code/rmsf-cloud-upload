@@ -9,7 +9,6 @@ class TopUpload
 
 
      static   function TopSliceUpload(){
-         $file = request()->file('image');
         $upload = new TopSliceUpload('','','','');
         return $upload->execute();
     }

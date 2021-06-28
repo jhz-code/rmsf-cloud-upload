@@ -93,7 +93,7 @@ class TopSliceUpload
      */
     private function top_mkdir(){
         if(!file_exists($this->filepath)){
-            return mkdir($this->filepath);
+            return mkdir($this->filepath,0777,true);
         }
     }
 
