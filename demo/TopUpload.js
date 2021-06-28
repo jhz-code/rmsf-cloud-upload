@@ -66,8 +66,6 @@ function Upload(){
                 progress = '100%';
             }else{
                 progress = Math.min(100,(blob_num/total_blob_num)* 100 ) +'%';
-                // console.log(progress);
-                // console.log('分割');
             }
             progressObj.style.width = progress;
             var t = setTimeout(function(){

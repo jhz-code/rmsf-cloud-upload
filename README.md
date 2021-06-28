@@ -47,3 +47,16 @@ $result = TopUpload::TopDeleteFileFromCos(string $COS_SECRETID,string $COS_SECRE
 var_dump($result);
 ~~~
 
+
+
+#### 前端分片请求参数
+
+~~~
+
+file: (binary)   //文件名称
+blob_num: 1     //分块序号
+total_blob_num: 284  //总共分块
+file_name:   11.zip  //文件名
+~~~
+
+
