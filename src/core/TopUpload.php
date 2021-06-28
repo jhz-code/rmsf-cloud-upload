@@ -21,7 +21,7 @@ class TopUpload
 
 
     /**
-     * 分片上传文件到腾讯cos
+     * 上传文件到腾讯cos
      * @param string $COS_SECRETID
      * @param string $COS_SECRETKEY
      * @param string $COS_REGION
