@@ -15,8 +15,10 @@ class TopUpload
      */
    static  function TopUploadLocal(string $LocalPath){
         $upload = new TopSliceUpload($_FILES["file"]["tmp_name"],$_POST['blob_num'],$_POST['total_blob_num'],$_POST['file_name']);
-        move_uploaded_file($upload->execute(),$LocalPath);//文件移动到目录地区
-        $upload->deleteFile();
+        if($upload->execute()){
+            move_uploaded_file($upload->execute(),$LocalPath);//文件移动到目录地区
+            $upload->deleteFile();
+        }
     }
 
 
@@ -34,7 +36,9 @@ class TopUpload
          $upload = new TopSliceUpload($_FILES["file"]["tmp_name"],$_POST['blob_num'],$_POST['total_blob_num'],$_POST['file_name']);
          if($localPath = $upload->execute()){
              $TopCos = new TopUploadToCos($COS_SECRETID,$COS_SECRETKEY,$COS_REGION);
-             return $TopCos->putObjectForFile($buckName,$key,$localPath);
+             $result = $TopCos->putObjectForFile($buckName,$key,$localPath);
+             $upload->deleteFile();
+             return $result;
          }else{
              return "";
          }
