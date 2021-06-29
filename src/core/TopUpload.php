@@ -29,7 +29,7 @@ class TopUpload
      * @param string $COS_REGION
      * @param string $buckName
      * @param string $key
-     * @return object|string
+     * @return array|string
      * @throws \think\Exception
      */
      static   function TopSliceUploadToCos(string $COS_SECRETID,string $COS_SECRETKEY,string $COS_REGION,string $buckName,string $key){
@@ -38,7 +38,12 @@ class TopUpload
              $TopCos = new TopUploadToCos($COS_SECRETID,$COS_SECRETKEY,$COS_REGION);
              $result = $TopCos->putObjectForFile($buckName,$key,$localPath);
              $upload->deleteFile();
-             return $result;
+             $info['ETag'] = $result['ETag'];
+             $info['RequestId'] = $result['RequestId'];
+             $info['Key'] = $result['Key'];
+             $info['Bucket'] = $result['Bucket'];
+             $info['Location'] = $result['Location'];
+             return $info;
          }else{
              return "";
          }
