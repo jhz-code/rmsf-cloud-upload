@@ -12,11 +12,11 @@ namespace RmTop\RmUpload\lib;
 class TopSliceUpload
 {
 
-    private $filepath = ''; //上传目录
-    private $tmpPath; //文件临时目录
-    private $blobNum; //第几个文件块
-    private $totalBlobNum; //文件块总数
-    private $fileName; //文件名
+    private string $filepath = ''; //上传目录
+    private string $tmpPath; //文件临时目录
+    private string $blobNum; //第几个文件块
+    private string $totalBlobNum; //文件块总数
+    private string  $fileName; //文件名
 
 
     /**
@@ -25,9 +25,9 @@ class TopSliceUpload
      * @param $blobNum
      * @param $totalBlobNum
      * @param $fileName
-     * @param $md5FileName
+     * @param string $md5FileName
      */
-    public function __construct($tmpPath,$blobNum,$totalBlobNum,$fileName, $md5FileName ="")
+    public function __construct($tmpPath, $blobNum, $totalBlobNum, $fileName, string $md5FileName ="")
     {
         $this->filepath = dirname(__DIR__)."/temp/upload/".md5($fileName)."/";
         $this->tmpPath = $tmpPath;
@@ -113,11 +113,34 @@ class TopSliceUpload
     }
 
 
+
     /**
+     * 上传成功后，删除本地对应目录文件
      * 删除目录文件
      */
     function deleteFile(){
-        rmdir($this->filepath);
+        //如果是目录则继续
+        if(is_dir($this->filepath)){
+            //扫描一个文件夹内的所有文件夹和文件并返回数组
+            $p = scandir($this->filepath);
+            foreach($p as $val){
+                //排除目录中的.和..
+                if($val !="." && $val !=".."){
+                    //如果是目录则递归子目录，继续操作
+                    if(is_dir($this->filepath.$val)){
+                        //子目录中操作删除文件夹和文件
+                        $this->deleteFile();
+                        //目录清空后删除空文件夹
+                        @rmdir($this->filepath.$val.'/');
+                    }else{
+                        //如果是文件直接删除
+                        unlink($this->filepath.$val);
+                    }
+                }
+            }
+            @rmdir($this->filepath);
+        }
     }
+
 
 }
