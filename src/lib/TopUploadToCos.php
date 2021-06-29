@@ -34,14 +34,14 @@ class TopUploadToCos
      * @param string $COS_SECRETKEY "云 API 密钥 SecretKey";
      * @param string $COS_REGION 设置一个默认的存储桶地域
      */
-    public function __construct(string $COS_SECRETID,string $COS_SECRETKEY,string $COS_REGION)
+    public function __construct(string $COS_SECRETID,string $COS_SECRETKEY,string $COS_REGION,string $schema = 'http')
     {
         $this->COS_SECRETID = $COS_SECRETID;
         $this->COS_SECRETKEY = $COS_SECRETKEY;
         $this->COS_REGION = $COS_REGION;
         $this->cosClient = new Client(array(
             'region' => $COS_REGION,
-            'schema' => 'https', //协议头部，默认为http
+            'schema' => $schema, //协议头部，默认为http
             'credentials'=> array(
                 'secretId'  => $COS_SECRETID,
                 'secretKey' => $COS_SECRETKEY,
@@ -73,7 +73,7 @@ class TopUploadToCos
      * 获取静态储存桶列表
      * @throws Exception
      */
-    function topListBuckets(): object
+    function topListBuckets()
     {
         try {
             //请求成功
@@ -95,7 +95,7 @@ class TopUploadToCos
      * @param string $LocalPath //本地文件绝对路径
      * @throws Exception
      */
-    function putObjectForFile(string $buckName,string $key,string $LocalPath ): object
+    function putObjectForFile(string $buckName,string $key,string $LocalPath )
     {
         try {
             $file = fopen($LocalPath, "rb");
@@ -121,7 +121,8 @@ class TopUploadToCos
      * @return object
      * @throws Exception
      */
-        function UploadForFile(string $buckName,string $key,string $LocalPath ): object{
+        function UploadForFile(string $buckName,string $key,string $LocalPath )
+        {
             try {
                 $file = fopen($LocalPath, 'rb');
                 if ($file) {
@@ -149,7 +150,7 @@ class TopUploadToCos
      * @return object
      * @throws Exception
      */
-    function putObjectForString(string $buckName,string $key,string $content): object
+    function putObjectForString(string $buckName,string $key,string $content)
     {
         try {
             return $this->cosClient->putObject(array(
@@ -170,7 +171,7 @@ class TopUploadToCos
      * @return object
      * @throws Exception
      */
-    function UploadForString(string $buckName,string $key,string $content): object
+    function UploadForString(string $buckName,string $key,string $content)
     {
         try {
             return $this->cosClient->Upload($buckName, $key, $content);
@@ -234,9 +235,8 @@ class TopUploadToCos
      */
     function topGetFileUrl(string $buckName,string $key,string $times){
         try {
-            $signedUrl = $this->cosClient->getObjectUrl($buckName, $key, '+10 minutes');
             // 请求成功 返回文件签名地址
-            return  $signedUrl;
+            return $this->cosClient->getObjectUrl($buckName, $key, '+10 minutes');
         } catch (\Exception $e) {
             // 请求失败
             throw  new Exception($e->getMessage());
@@ -251,7 +251,7 @@ class TopUploadToCos
      * @param string $key //此处的 key 为对象键，对象键是对象在存储桶中的唯一标识
      * @throws Exception
      */
-    function topDeleteFile(string $buckName,string $key): object
+    function topDeleteFile(string $buckName,string $key)
     {
         try {
             // 请求成功
@@ -274,7 +274,7 @@ class TopUploadToCos
      * @return object
      * @throws Exception
      */
-    function topDeleteManyFile(string $buckName,array $keys): object
+    function topDeleteManyFile(string $buckName,array $keys)
     {
         try {
             // 请求成功
