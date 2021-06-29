@@ -106,7 +106,7 @@ class TopUpload
      * @return object
      * @throws \think\Exception
      */
-    static function TopDeleteFileFromCos(string $COS_SECRETID,string $COS_SECRETKEY,string $COS_REGION,string $buckName,string $key,){
+    static function TopDeleteFileFromCos(string $COS_SECRETID,string $COS_SECRETKEY,string $COS_REGION,string $buckName,string $key){
         $TopCos = new TopUploadToCos($COS_SECRETID,$COS_SECRETKEY,$COS_REGION);
         return $TopCos->topDeleteFile($buckName,$key);
     }
