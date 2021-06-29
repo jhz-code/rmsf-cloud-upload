@@ -108,7 +108,7 @@ class TopSliceUpload
         if($md5FileName){
             return $md5FileName . '.' . pathinfo($fileName)['extension'];
         }else{
-            return "rTop_".md5(time().'rTop').'.' . pathinfo($fileName)['extension'];
+            return "rTop_".md5($fileName.'rTop').'.' . pathinfo($fileName)['extension'];
         }
     }
 
