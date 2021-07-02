@@ -58,6 +58,7 @@ class TopSliceUpload
             if(file_exists($this->filepath.'/'. $this->fileName)){
                 $file["filePath"] = $this->filepath.'/'. $this->fileName;
                 $file['fileName'] = $this->fileName;
+                return $file;
             }else{
                 return  false;
             }
