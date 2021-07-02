@@ -22,7 +22,7 @@ class TopUpload
                 mkdir($LocalPath,0777,true);
             }
             //移动文件到目标路径
-            if(copy($result['filePath'],$LocalPath)){
+            if(copy($result['filePath'],$LocalPath.'/'.$result['fileName'])){
                 return $LocalPath.'/'.$result['fileName'];
             }
             $upload->deleteFile();
