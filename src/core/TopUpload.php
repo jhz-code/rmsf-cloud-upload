@@ -12,11 +12,16 @@ class TopUpload
     /**
      * @param string $LocalPath
      * 文件上传到本地
+     * 增加路径验证、不存在路径则创建路径
      */
    static  function TopUploadLocal(string $LocalPath){
         $upload = new TopSliceUpload($_FILES["file"]["tmp_name"],$_POST['blob_num'],$_POST['total_blob_num'],$_POST['file_name']);
-        if($upload->execute()){
-            move_uploaded_file($upload->execute(),$LocalPath);//文件移动到目录地区
+        if($result = $upload->execute()){
+            if(!file_exists($LocalPath)){
+                if(mkdir($LocalPath,0777,true)){
+                    move_uploaded_file($result,$LocalPath);//文件移动到本地目录地区
+                };
+            }
             $upload->deleteFile();
         }
     }
