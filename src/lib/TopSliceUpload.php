@@ -52,6 +52,20 @@ class TopSliceUpload
         }
     }
 
+    //本地上传执行
+    public function execute_local(){
+        if($this->blobNum == $this->totalBlobNum){
+            if(file_exists($this->filepath.'/'. $this->fileName)){
+                $file["filePath"] = $this->filepath.'/'. $this->fileName;
+                $file['fileName'] = $this->fileName;
+            }else{
+                return  false;
+            }
+        }else{
+            return  false;
+        }
+    }
+
 
 
     //判断是否是最后一块，如果是则进行文件合成并且删除文件块
