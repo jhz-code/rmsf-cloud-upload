@@ -23,7 +23,7 @@ class TopUpload
             }
             //移动文件到目标路径
             if(copy($result['filePath'],$LocalPath.'/'.$result['fileName'])){
-                return $LocalPath.'/'.$result['fileName'];
+                return '/'.$result['fileName'];
             }
             $upload->deleteFile();
         }
