@@ -17,12 +17,13 @@ class TopUpload
    static  function TopUploadLocal(string $LocalPath){
         $upload = new TopSliceUpload($_FILES["file"]["tmp_name"],$_POST['blob_num'],$_POST['total_blob_num'],$_POST['file_name']);
         if($result = $upload->execute_local()){
+            //路径不存在，创建路径
             if(!file_exists($LocalPath)){
-                if(mkdir($LocalPath,0777,true)){
-                    if(move_uploaded_file($result['filePath'],$LocalPath)){
-                        return $LocalPath.'/'.$result['fileName'];
-                    }
-                };
+                mkdir($LocalPath,0777,true);
+            }
+            //移动文件到目标路径
+            if(copy($result['filePath'],$LocalPath)){
+                return $LocalPath.'/'.$result['fileName'];
             }
             $upload->deleteFile();
         }
