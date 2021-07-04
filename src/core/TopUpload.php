@@ -26,15 +26,22 @@ class TopUpload
             //移动文件到目标路径
             if(copy($result['filePath'],$LocalPath.'/'.$result['fileName'])){
                 if(!$is_store){
+                    $upload->deleteFile();//删除缓存库
                     return '/'.$result['fileName'];
                 }else{
+                    $upload->deleteFile();//删除缓存库
                     TopUploadStore::insertFile('local',TopUploadStore::getFileUniqId(),'/'.$result['fileName']);
                     return ['imgPath'=>'/'.$result['fileName'],'key'=>TopUploadStore::getFileUniqId()];
                 }
+            }else{
+                return '';
             }
-            $upload->deleteFile();
+        }else{
+            return  '';
         }
     }
+
+
 
 
     /**
