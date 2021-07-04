@@ -39,8 +39,9 @@ class TopUploadStore
      * @param string $fileKey
      * @param string $filePath
      */
-   static function insertFile(string $fileKey ,string $filePath){
+   static function insertFile(string $type,string $fileKey ,string $filePath){
        TopStaticUploadModel::create([
+           'type'=>$type,//文件类型
            'key'=>$fileKey, //文件key
            'img_path'=>$filePath //文件地址
        ]);

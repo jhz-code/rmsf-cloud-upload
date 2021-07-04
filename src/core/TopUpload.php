@@ -16,7 +16,7 @@ class TopUpload
      * 增加路径验证、不存在路径则创建路径
      * @return array|string
      */
-   static  function TopUploadLocal(string $LocalPath,bool $is_store = false){
+    static  function TopUploadLocal(string $LocalPath,bool $is_store = false){
         $upload = new TopSliceUpload($_FILES["file"]["tmp_name"],$_POST['blob_num'],$_POST['total_blob_num'],$_POST['file_name']);
         if($result = $upload->execute_local()){
             //路径不存在，创建路径
@@ -28,8 +28,8 @@ class TopUpload
                 if(!$is_store){
                     return '/'.$result['fileName'];
                 }else{
-                    TopUploadStore::insertFile(TopUploadStore::getFileUniqId(),'/'.$result['fileName']);
-                     return ['/'.$result['fileName'],TopUploadStore::getFileUniqId()];
+                    TopUploadStore::insertFile('local',TopUploadStore::getFileUniqId(),'/'.$result['fileName']);
+                    return ['imgPath'=>'/'.$result['fileName'],'key'=>TopUploadStore::getFileUniqId()];
                 }
             }
             $upload->deleteFile();
@@ -47,22 +47,22 @@ class TopUpload
      * @return array|string
      * @throws \think\Exception
      */
-     static   function TopSliceUploadToCos(string $COS_SECRETID,string $COS_SECRETKEY,string $COS_REGION,string $buckName,string $key,bool $is_store = false){
-         $upload = new TopSliceUpload($_FILES["file"]["tmp_name"],$_POST['blob_num'],$_POST['total_blob_num'],$_POST['file_name']);
-         if($localPath = $upload->execute()){
-             $TopCos = new TopUploadToCos($COS_SECRETID,$COS_SECRETKEY,$COS_REGION);
-             $result = $TopCos->putObjectForFile($buckName,$key,$localPath);
-             $upload->deleteFile();
-             $info['ETag'] = $result['ETag'];
-             $info['RequestId'] = $result['RequestId'];
-             $info['Key'] = $result['Key'];
-             $info['Bucket'] = $result['Bucket'];
-             $info['Location'] = $result['Location'];
-
-             return $info;
-         }else{
-             return "";
-         }
+    static   function TopSliceUploadToCos(string $COS_SECRETID,string $COS_SECRETKEY,string $COS_REGION,string $buckName,string $key,bool $is_store = false){
+        $upload = new TopSliceUpload($_FILES["file"]["tmp_name"],$_POST['blob_num'],$_POST['total_blob_num'],$_POST['file_name']);
+        if($localPath = $upload->execute()){
+            $TopCos = new TopUploadToCos($COS_SECRETID,$COS_SECRETKEY,$COS_REGION);
+            $result = $TopCos->putObjectForFile($buckName,$key,$localPath);
+            $upload->deleteFile();
+            TopUploadStore::insertFile('cos', $result['Key'],'/'.$result['fileName']);
+            $info['ETag'] = $result['ETag'];
+            $info['RequestId'] = $result['RequestId'];
+            $info['Key'] = $result['Key'];
+            $info['Bucket'] = $result['Bucket'];
+            $info['Location'] = $result['Location'];
+            return $info;
+        }else{
+            return "";
+        }
     }
 
 
@@ -78,7 +78,7 @@ class TopUpload
      */
     static function TopDownFileForMemoryFromCos(string $COS_SECRETID,string $COS_SECRETKEY,string $COS_REGION,string $buckName,string $key){
         $TopCos = new TopUploadToCos($COS_SECRETID,$COS_SECRETKEY,$COS_REGION);
-         return $TopCos->topDownFileToMemory($buckName,$key);
+        return $TopCos->topDownFileToMemory($buckName,$key);
     }
 
 
