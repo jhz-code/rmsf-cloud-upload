@@ -27,7 +27,7 @@ class TopUpload
             if(copy($result['filePath'],$LocalPath.'/'.$result['fileName'])){
                 if(!$is_store){
                     $upload->deleteFile();//删除缓存库
-                    return '/'.$result['fileName'];
+                    return ['imgPath'=>'/'.$result['fileName'],'key'=>""];
                 }else{
                     $upload->deleteFile();//删除缓存库
                     TopUploadStore::insertFile('local',TopUploadStore::getFileUniqId(),'/'.$result['fileName']);
@@ -60,7 +60,9 @@ class TopUpload
             $TopCos = new TopUploadToCos($COS_SECRETID,$COS_SECRETKEY,$COS_REGION);
             $result = $TopCos->putObjectForFile($buckName,$key,$localPath);
             $upload->deleteFile();
-            TopUploadStore::insertFile('cos', $result['Key'],'/'.$result['fileName']);
+            if($is_store){
+                TopUploadStore::insertFile('cos', $result['Key'],'/'.$result['fileName']);
+            }
             $info['ETag'] = $result['ETag'];
             $info['RequestId'] = $result['RequestId'];
             $info['Key'] = $result['Key'];
