@@ -28,19 +28,22 @@ class TopUploadStore
      * 获取文件列表
      * @param string $where
      * @param int $limit
+     * @return \think\Paginator
      * @throws DbException
      */
   static function getFileList(string $where = "1", int $limit = 15){
-       TopStaticUploadModel::where($where)->paginate($limit);
+      return  TopStaticUploadModel::where($where)->paginate($limit);
     }
 
 
     /**
+     * @param string $type
      * @param string $fileKey
      * @param string $filePath
+     * @return TopStaticUploadModel|\think\Model
      */
    static function insertFile(string $type,string $fileKey ,string $filePath){
-       TopStaticUploadModel::create([
+       return  TopStaticUploadModel::create([
            'type'=>$type,//文件类型
            'key'=>$fileKey, //文件key
            'img_path'=>$filePath //文件地址
