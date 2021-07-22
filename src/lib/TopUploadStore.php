@@ -32,7 +32,13 @@ class TopUploadStore
      * @throws DbException
      */
   static function getFileList($where = 1, int $limit = 15){
-      return  TopStaticUploadModel::where($where)->paginate($limit);
+      return  TopStaticUploadModel::where($where)->paginate($limit)->each(function (&$item){
+          if($item['type'] == 'cos'){
+              return $item['type_name'] = "腾讯cos";
+          }else{
+              return $item['type_name'] = "本地";
+          }
+      });
     }
 
 
