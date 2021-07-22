@@ -31,12 +31,13 @@ class TopUploadStore
      * @return \think\Paginator
      * @throws DbException
      */
-  static function getFileList(string $where = "1", int $limit = 15){
+  static function getFileList($where = 1, int $limit = 15){
       return  TopStaticUploadModel::where($where)->paginate($limit);
     }
 
 
     /**
+     *
      * @param string $type
      * @param string $fileKey
      * @param string $filePath
