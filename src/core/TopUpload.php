@@ -25,7 +25,8 @@ class TopUpload
                 mkdir($LocalPath,0777,true);
             }
             //移动文件到目标路径
-            $saveFileName = $fileName??$result['fileName'];
+            $saveFileName = $fileName?$fileName.substr(strrchr($result['fileName'], '.'), 1)?$result['fileName'];
+
             if(copy($result['filePath'],$LocalPath.'/'.$saveFileName)){
                 if(!$is_store){
                     $upload->deleteFile();//删除缓存库
