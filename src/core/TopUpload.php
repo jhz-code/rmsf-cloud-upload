@@ -11,12 +11,13 @@ class TopUpload
 
     /**
      * @param string $LocalPath
+     * @param string $fileName //自定义文件名称
      * @param bool $is_store //是否生产唯一表示 存到数据库 统一管理
      * 文件上传到本地
      * 增加路径验证、不存在路径则创建路径
      * @return array|string
      */
-    static  function TopUploadLocal(string $LocalPath,bool $is_store = false){
+    static  function TopUploadLocal(string $LocalPath,string $fileName = '', bool $is_store = false){
         $upload = new TopSliceUpload($_FILES["file"]["tmp_name"],$_POST['blob_num'],$_POST['total_blob_num'],$_POST['file_name']);
         if($result = $upload->execute_local()){
             //路径不存在，创建路径
@@ -24,14 +25,15 @@ class TopUpload
                 mkdir($LocalPath,0777,true);
             }
             //移动文件到目标路径
-            if(copy($result['filePath'],$LocalPath.'/'.$result['fileName'])){
+            $saveFileName = $fileName??$result['fileName'];
+            if(copy($result['filePath'],$LocalPath.'/'.$saveFileName)){
                 if(!$is_store){
                     $upload->deleteFile();//删除缓存库
-                    return ['imgPath'=>'/'.$result['fileName'],'key'=>""];
+                    return ['imgPath'=>'/'.$saveFileName,'key'=>""];
                 }else{
                     $upload->deleteFile();//删除缓存库
-                    TopUploadStore::insertFile('local',TopUploadStore::getFileUniqId(),'/'.$result['fileName']);
-                    return ['imgPath'=>'/'.$result['fileName'],'key'=>TopUploadStore::getFileUniqId()];
+                    TopUploadStore::insertFile('local',TopUploadStore::getFileUniqId(),'/'.$saveFileName);
+                    return ['imgPath'=>'/'.$saveFileName,'key'=>TopUploadStore::getFileUniqId()];
                 }
             }else{
                 return '';
