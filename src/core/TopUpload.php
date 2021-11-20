@@ -2,6 +2,7 @@
 
 namespace RmTop\RmUpload\core;
 
+use RmTop\RmUpload\lib\TopNoSliceUpload;
 use RmTop\RmUpload\lib\TopSliceUpload;
 use RmTop\RmUpload\lib\TopUploadStore;
 use RmTop\RmUpload\lib\TopUploadToCos;
@@ -76,6 +77,40 @@ class TopUpload
             return "";
         }
     }
+
+
+    /**
+     * 不分片上传文件
+     * @param string $COS_SECRETID
+     * @param string $COS_SECRETKEY
+     * @param string $COS_REGION
+     * @param string $buckName
+     * @param string $key
+     * @param bool $is_store
+     * @return array|string
+     * @throws \think\Exception
+     */
+    static   function TopUploadToCos(string $COS_SECRETID,string $COS_SECRETKEY,string $COS_REGION,string $buckName,string $key,bool $is_store = false){
+        $upload = new TopNoSliceUpload($_FILES["file"]["tmp_name"],$_POST['name']);
+        if($localPath = $upload->execute()){
+            $TopCos = new TopUploadToCos($COS_SECRETID,$COS_SECRETKEY,$COS_REGION);
+            $result = $TopCos->putObjectForFile($buckName,$key,$localPath);
+            $upload->deleteFile();
+            if($is_store){
+                TopUploadStore::insertFile('cos', $result['Key'],'/'.$result['fileName']);
+            }
+            $info['ETag'] = $result['ETag'];
+            $info['RequestId'] = $result['RequestId'];
+            $info['Key'] = $result['Key'];
+            $info['Bucket'] = $result['Bucket'];
+            $info['Location'] = $result['Location'];
+            return $info;
+        }else{
+            return "";
+        }
+    }
+
+
 
 
     /**
